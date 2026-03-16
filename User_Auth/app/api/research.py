@@ -1,12 +1,13 @@
-from sqlalchemy.util.concurrency import asyncio
+from fastapi import APIRouter
+from app.models.schemas import ResearchRequest, ResearchResponse
+from app.agents.research_agent import run_research
 
-from app.tools.summerize import summarize_article
-from app.tools.web_search import search_web
+router = APIRouter(prefix="/research", tags=["Research"])
 
-async def run_research(query: str):
-    sources = await search_web(query)
-    summaries = await asyncio.gather(
-        *[summarize_article(src) for src in sources]
-    )
-    final_report = await generate_report(query, summaries)
-    return final_report
+
+@router.post("/", response_model=ResearchResponse)
+async def research_endpoint(request: ResearchRequest):
+
+    result = await run_research(request.query)
+
+    return result

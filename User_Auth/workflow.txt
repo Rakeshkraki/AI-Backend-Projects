@@ -1,0 +1,27 @@
+User Query
+   │
+Search Internet
+   │
+Retrieve Articles
+   │
+Summarize Each Source
+   │
+Combine Results
+   │
+Generate Research Report
+
+##############################################################################################################
+
+                                    High level Architecture
+
+                FastAPI Server
+                       │
+                 Async Endpoint
+                       │
+                Async Task Manager
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+    Web Search      LLM Calls     Document Tools
+        │              │              │
+        └──── AsyncIO Event Loop ────┘

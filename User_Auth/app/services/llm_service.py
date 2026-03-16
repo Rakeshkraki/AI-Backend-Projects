@@ -1,12 +1,17 @@
-async def generate_report(query, summaries):
+from openai import AsyncOpenAI
+from app.config import settings
 
-    prompt = f"""
-    Research query: {query}
+client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 
-    Summaries:
-    {summaries}
 
-    Generate a detailed research report.
-    """
+async def call_llm(prompt: str):
 
-    return await call_llm(prompt)
+    response = await client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.3
+    )
+
+    return response.choices[0].message.content

@@ -1,0 +1,24 @@
+repos:
+
+  # Ruff linting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.7
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # Pyright type checking
+  - repo: https://github.com/pre-commit/mirrors-pyright
+    rev: v1.1.380
+    hooks:
+      - id: pyright
+
+  # Basic file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
