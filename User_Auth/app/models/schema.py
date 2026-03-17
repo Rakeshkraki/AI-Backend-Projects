@@ -10,3 +10,4 @@ class ResearchResponse(BaseModel):
     query: str
     sources: List[str]
     report: str
+
