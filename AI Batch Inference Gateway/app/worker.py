@@ -1,6 +1,8 @@
 
 import asyncio
 from app.rate_limiter import RateLimiter
+from app.shutdown import shutdown_event
+from app.retry import retry
 
 CONCURRENCY_LIMIT = 100
 semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
@@ -12,16 +14,22 @@ async def fake_inference(text: str):
     return text.upper()
 
 async def process_item(item, api_key):
-    await rate_limiter.acquire(api_key)
+    async def task():
+        await rate_limiter.acquire(api_key)
+        async with semaphore:
+            return await fake_inference(item)
 
-    async with semaphore:
-        return await fake_inference(item)
+    return await retry(task)
 
 async def process_batch(items):
     results = []
 
     async with asyncio.TaskGroup() as tg:
-        tasks = [tg.create_task(process_item(i)) for i in items]
+        tasks = []
+        for item in items:
+            if shutdown_event.is_set():
+                break
+            tasks.append(tg.create_task(process_item(item)))
 
     for t in tasks:
         results.append(t.result())
