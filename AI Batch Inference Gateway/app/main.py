@@ -1,10 +1,20 @@
 from fastapi import FastAPI
-import asyncio
+from pydantic import BaseModel
 from app.worker import process_batch
 
 app = FastAPI()
 
+
+class InferRequest(BaseModel):
+    api_key: str
+    items: list[str]
+
+
 @app.post("/infer")
-async def infer(data: list[str]):
-    results = await process_batch(data)
+async def infer(payload: InferRequest):
+    results = await process_batch(
+        payload.items,
+        payload.api_key
+    )
+
     return {"results": results}
