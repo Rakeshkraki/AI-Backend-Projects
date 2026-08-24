@@ -23,7 +23,7 @@ print(password_hash)
 
 is_valid = password_service.verify_password(
     "name!123",
-    password_hash,
+    "$argon2id$v=19$m=65536,t=3,p=4$JEbKP5ZBHRR9xRSOapEqsQ$yI0DJSGBwzlBiSI2k0KVPqJQUK+GqsRBiUK53IiKksg",
 )
 
 print("Password is correct" if is_valid else "Invalid password")
